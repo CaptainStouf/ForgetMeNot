@@ -1,0 +1,26 @@
+import org.openhab.core.library.types.*
+
+rule "Initialize heating states"
+	when 
+		System started
+	then		
+		postUpdate(Heating_Target_Zone1, 22)
+		postUpdate(Heating_Zone1, OFF)
+end
+
+rule "Start heating"
+	when 
+		Item EnOcean_sensor_01809DC1 changed or
+		Item Heating_Target_Zone1 changed
+	then		
+		var Number target = 22
+		var Number current = 22
+		if(Heating_Target_Zone1.state instanceof DecimalType) target = Heating_Target_Zone1.state as DecimalType
+		if(EnOcean_sensor_01809DC1.state instanceof DecimalType) current = EnOcean_sensor_01809DC1.state as DecimalType
+	
+		if (current < target){
+			postUpdate(Heating_Zone1, ON)
+		} else {
+			postUpdate(Heating_Zone1, OFF)
+		}
+end
