@@ -39,8 +39,17 @@ sudo apt-get update
 sudo apt-get upgrade
 sudo reboot
 ```
-	
-### Step 3 
+### Step 3
+
+Change Pi hostname for easily identification on your wifi router [Details] (http://www.howtogeek.com/167195/how-to-change-your-raspberry-pi-or-other-linux-devices-hostname/)
+```sh
+sudo sed -i 's/raspberrypi/RPi-PiTFT/g' /etc/hosts
+sudo sed -i 's/raspberrypi/RPi-PiTFT/g' /etc/hostname
+sudo /etc/init.d/hostname.sh
+sudo reboot
+```
+
+### Step 4 
 
 Auto run browser on startup
 
