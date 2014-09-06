@@ -19,7 +19,7 @@ Prepare Micro SD card:
 ### Step 2
 
 Pi configuration 
- * Boot Pi extend file system and configure password, timezone and keyboard
+ * Boot Pi with PiTFT on it, extend file system and configure password, timezone and keyboard reboot
  * Configure wifi using [WiFi Config utility] (https://learn.adafruit.com/adafruits-raspberry-pi-lesson-3-network-setup/setting-up-wifi-with-raspbian)
 
 **Use this command to startx using the hdmi display (Very more usefull for configure WIFI)**
@@ -28,7 +28,7 @@ FRAMEBUFFER=/dev/fb0 startx
 ```
  The normal startx command use PiTFT display
 
- * Reboot
+ * Logout and Reboot
 ```sh
 sudo reboot
 ```
