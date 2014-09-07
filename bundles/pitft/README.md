@@ -106,7 +106,7 @@ while true; do
 	matchbox-window-manager -use_titlebar no &
 
 	# Start the browser (See http://peter.sh/experiments/chromium-command-line-switches/)
-	chromium  --app=http://192.168.0.150:8080/openhab.app?sitemap=demo
+	chromium  --app=http://192.168.0.150:8080/openhab.app
 
 done;
 ```
