@@ -1,0 +1,18 @@
+{
+  "name": "MotorShieldControler",
+  "version": "0.0.1",
+  "description": "Adafruit arduino motor shield v2 controler lib for raspberry pi",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "Pascal Martin",
+  "license": "None",
+  "dependencies": {
+	"i2c" : "0.1.x",
+    "async" : "0.9.x",
+    "sleep" : "1.1.x"
+  },
+  "devDependencies": {}
+}
