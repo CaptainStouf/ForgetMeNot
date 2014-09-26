@@ -37,24 +37,16 @@ StepperMotor.prototype.setSpeed = function(rpm) {
     this.steppingcounter = 0;
 };
 
-StepperMotor.prototype.release = function(callback) {
-    var that = this;
-    async.series([function(cb){
-        that.MC.setPin(that.AIN1pin, LOW, cb);
-    },function(cb){
-        that.MC.setPin(that.AIN2pin, LOW, cb);
-    },function(cb){
-        that.MC.setPin(that.BIN1pin, LOW, cb);
-    },function(cb){
-        that.MC.setPin(that.BIN2pin, LOW, cb);
-    },function(cb){
-        that.MC.setPWM(that.PWMApin, 0, cb);
-    },function(cb){
-        that.MC.setPWM(that.PWMBpin, 0, cb);
-    }], callback);
+StepperMotor.prototype.release = function() {
+    this.MC.setPin(this.AIN1pin, LOW);
+    this.MC.setPin(this.AIN2pin, LOW);
+    this.MC.setPin(this.BIN1pin, LOW);
+    this.MC.setPin(this.BIN2pin, LOW);
+    this.MC.setPWM(this.PWMApin, 0);
+    this.MC.setPWM(this.PWMBpin, 0);
 };
 
-StepperMotor.prototype.step = function(steps, dir, style, callback) {
+StepperMotor.prototype.step = function(steps, dir, style) {
     var that = this;
     var uspers = this.usperstep;
     var ret = 0;
@@ -66,57 +58,28 @@ StepperMotor.prototype.step = function(steps, dir, style, callback) {
     }
 
     var step = function(stepCallback) {
-        async.series([
-            function(cb){
-                that.onestep(dir, style, function(err, _ret){
-                    ret = _ret;
-                    cb(err);
-                });
-            }, function(cb){
-                setTimeout(cb, uspers/1000);
-                //sleep.usleep(uspers); // 5000 microseconds = 5 milisecond * 1000
-                //cb();
-            }, function(cb){
-                that.steppingcounter += (uspers % 1000);
-                if (that.steppingcounter >= 1000){
-                    /*setTimeout(function(){
-                        that.steppingcounter -= 1000;
-                        cb();
-                    }, 1); // 1 ms*/
-                    sleep.usleep(1000); // 1000 microseconds = 1 milisecond
-                    that.steppingcounter -= 1000;
-                    cb();
-                } else {
-                    cb();
-                }
-            }
-        ], stepCallback);
+        ret = that.onestep(dir, style);
+        sleep.usleep(uspers); // 5000 microseconds = 5 milisecond * 1000
+        that.steppingcounter += (uspers % 1000);
+        if (that.steppingcounter >= 1000){
+            sleep.usleep(1000); // 1000 microseconds = 1 milisecond
+            that.steppingcounter -= 1000;
+        }
     };
 
-    async.series([function(cb){
-        async.whilst(
-            function () {
-                return steps > 0;
-            },
-            function (cb2) {
-                steps -= 1;
-                step(cb2);
-            },cb);
-    }, function(cb){
-        if (style !== MICROSTEP) {
-            cb();
-            return;
-        }
-        async.whilst(
-            function () {
-                return (ret != 0) && (ret !== MICROSTEPS);
-            },
-            step, cb);
-    }], callback);
+    while (steps > 0){
+        steps -= 1;
+        step();
+    }
+
+    if (style === MICROSTEP) {
+       while((ret != 0) && (ret !== MICROSTEPS)){
+           step();
+       }
+    }
 };
 
-StepperMotor.prototype.onestep = function(dir, style, callback) {
-    var that = this;
+StepperMotor.prototype.onestep = function(dir, style) {
     var ocra = 255;
     var ocrb = 255;
 
@@ -223,37 +186,29 @@ StepperMotor.prototype.onestep = function(dir, style, callback) {
         }
     }
 
-    async.series([function(cb){
-        that.MC.setPWM(that.PWMApin, ocra*16, cb);        
-    }, function(cb){
-        that.MC.setPWM(that.PWMBpin, ocrb*16, cb);
-    }, function(cb){
-        if (latch_state & 0x1){
-            that.MC.setPin(that.AIN2pin, HIGH, cb);
-        } else {
-            that.MC.setPin(that.AIN2pin, LOW, cb);
-        }
-    }, function(cb){
-        if (latch_state & 0x2){
-            that.MC.setPin(that.BIN1pin, HIGH, cb);
-        } else {
-            that.MC.setPin(that.BIN1pin, LOW, cb);
-        }
-    }, function(cb){
-        if (latch_state & 0x4){
-            that.MC.setPin(that.AIN1pin, HIGH, cb);
-        } else {
-            that.MC.setPin(that.AIN1pin, LOW, cb);
-        }
-    }, function(cb){
-        if (latch_state & 0x8){
-            that.MC.setPin(that.BIN2pin, HIGH, cb);
-        } else {
-            that.MC.setPin(that.BIN2pin, LOW, cb);
-        }
-    }], function(err){
-        callback(err, that.currentstep);
-    });
+    this.MC.setPWM(this.PWMApin, ocra*16);
+    this.MC.setPWM(this.PWMBpin, ocrb*16);
+    if (latch_state & 0x1){
+        this.MC.setPin(this.AIN2pin, HIGH);
+    } else {
+        this.MC.setPin(this.AIN2pin, LOW);
+    }
+    if (latch_state & 0x2){
+        this.MC.setPin(this.BIN1pin, HIGH);
+    } else {
+        this.MC.setPin(this.BIN1pin, LOW);
+    }
+    if (latch_state & 0x4){
+        this.MC.setPin(this.AIN1pin, HIGH);
+    } else {
+        this.MC.setPin(this.AIN1pin, LOW);
+    }
+    if (latch_state & 0x8){
+        this.MC.setPin(this.BIN2pin, HIGH);
+    } else {
+        this.MC.setPin(this.BIN2pin, LOW);
+    }
+    return this.currentstep
 };
 
 StepperMotor.FORWARD = FORWARD;

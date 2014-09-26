@@ -1,5 +1,6 @@
 
 var async = require('async');
+var sleep = require('sleep');
 
 var MotorShield = require("../lib/MotorShield");
 var DCMotor = require("../lib/DCMotor");
@@ -13,79 +14,42 @@ async.series([
     function(cb){
         motorShield.begin(cb);
     },function(cb) {
-        myMotor.setSpeed(150, cb);  // 10 rpm
-    },function(cb){
-        myMotor.run(DCMotor.FORWARD, cb);
-    }, function(cb){
+        myMotor.setSpeed(150);  // 10 rpm
+        myMotor.run(DCMotor.FORWARD);
         // turn on motor
-        myMotor.run(DCMotor.RELEASE, cb);
-    }, function(cb){
+        myMotor.run(DCMotor.RELEASE);
 
         console.log("tick");
 
         myMotor.run(DCMotor.FORWARD);
 
-        var speed = 0;
-        async.whilst(
-            function () {
-                return speed < 255;
-            },
-            function (cb2) {
-                myMotor.setSpeed(speed, function(){
-                    ++speed;
-                    setTimeout(cb2, 10);
-                });
-            },cb
-        );
+        for(var speed = 0;speed<255;++speed){
+            myMotor.setSpeed(speed);
+            sleep.usleep(10000); // 10000 microseconds 10 milisecond
+        }
 
-    }, function(cb){
-        var speed = 254;
-        async.whilst(
-            function () {
-                return speed > -1;
-            },
-            function (cb2) {
-                myMotor.setSpeed(speed, function(){
-                    --speed;
-                    setTimeout(cb2, 10);
-                });
-            },cb
-        );
-    }, function(cb){
+        for(var speed = 254;speed>-1;--speed){
+            myMotor.setSpeed(speed);
+            sleep.usleep(10000); // 10000 microseconds 10 milisecond
+        }
+
         console.log("tock");
         myMotor.run(DCMotor.BACKWARD);
 
-        var speed = 0;
-        async.whilst(
-            function () {
-                return speed < 255;
-            },
-            function (cb2) {
-                myMotor.setSpeed(speed, function(){
-                    ++speed;
-                    setTimeout(cb2, 10);
-                });
-            },cb
-        );
+        for(var speed = 0;speed<255;++speed){
+            myMotor.setSpeed(speed);
+            sleep.usleep(10000); // 10000 microseconds 10 milisecond
+        }
 
-    }, function(cb){
-        var speed = 254;
-        async.whilst(
-            function () {
-                return speed > -1;
-            },
-            function (cb2) {
-                myMotor.setSpeed(speed, function(){
-                    --speed;
-                    setTimeout(cb2, 10);
-                });
-            },cb
-        );
-    }, function(cb){
+        for(var speed = 254;speed>-1;--speed){
+            myMotor.setSpeed(speed);
+            sleep.usleep(10000); // 10000 microseconds 10 milisecond
+        }
+
         console.log("tech");
-        myMotor.run(DCMotor.RELEASE, function(){
-            setTimeout(cb, 1000);
-        });
+        myMotor.run(DCMotor.RELEASE);
+
+        cb();
     }
 
 ], function(err){

@@ -8,6 +8,12 @@ var RELEASE = 4;
 var LOW = 0;
 var HIGH = 1;
 
+function errorHandler(err){
+    if (err){
+        throw err;
+    }
+}
+
 // Constructor
 var DCMotor = function (MC, PWMpin, IN2pin, IN1pin) {
     this.MC = MC;
@@ -16,30 +22,20 @@ var DCMotor = function (MC, PWMpin, IN2pin, IN1pin) {
     this.IN2pin = IN1pin;
 }
 
-DCMotor.prototype.setSpeed = function(speed, callback) {
-    this.MC.setPWM(this.PWMpin, speed*16, callback)
+DCMotor.prototype.setSpeed = function(speed) {
+    this.MC.setPWM(this.PWMpin, speed*16)
 };
 
-DCMotor.prototype.run = function(cmd, callback) {
-    var that = this;
+DCMotor.prototype.run = function(cmd) {
     if (cmd === FORWARD) {
-        async.series([function(cb){
-            that.MC.setPin(that.IN2pin, LOW, cb);  // take low first to avoid 'break'
-        }, function(cb){
-            that.MC.setPin(that.IN1pin, HIGH, cb);
-        }],callback);
+        this.MC.setPin(this.IN2pin, LOW, errorHandler);  // take low first to avoid 'break'
+        this.MC.setPin(this.IN1pin, HIGH, errorHandler);
     } else if (cmd === BACKWARD) {
-        async.series([function(cb){
-            that.MC.setPin(that.IN1pin, LOW, cb);  // take low first to avoid 'break'
-        }, function(cb){
-            that.MC.setPin(that.IN2pin, HIGH, cb);
-        }],callback);
+        this.MC.setPin(this.IN1pin, LOW, errorHandler);  // take low first to avoid 'break'
+        this.MC.setPin(this.IN2pin, HIGH, errorHandler);
     } else if (cmd === RELEASE) {
-        async.series([function(cb){
-            that.MC.setPin(that.IN1pin, LOW, cb);
-        }, function(cb){
-            that.MC.setPin(that.IN2pin, LOW, cb);
-        }],callback);
+        this.MC.setPin(this.IN1pin, LOW, errorHandler);
+        this.MC.setPin(this.IN2pin, LOW, errorHandler);
     } else {
         throw new Error('Invalide commande : ' + cmd);
     }

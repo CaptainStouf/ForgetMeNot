@@ -44,35 +44,29 @@ MotorShield.prototype.begin = function(freq, callback) {
     this.freq = freq;
     var that = this;
     async.series([function(cb){
-        that.pwm.begin(cb);
-    }, function(cb){
+        that.pwm.begin();
         that.pwm.setPWMFreq(freq, cb);  // This is the maximum PWM frequency
     }, function(cb){
-        var count = 0;
-        async.whilst(
-            function () {
-                return count < 16;
-            },
-            function (cb2) {
-                that.pwm.setPWM(count++, 0, 0, cb2);
-            },cb
-        );
+        for (var i = 0;i<16;++i){
+            that.pwm.setPWM(i, 0, 0);
+        }
+        cb();
     }] , callback);
 };
 
-MotorShield.prototype.setPWM = function(pin, value, callback) {
+MotorShield.prototype.setPWM = function(pin, value) {
     if (value > 4095){
-        this.pwm.setPWM(pin, 4096, 0, callback)
+        this.pwm.setPWM(pin, 4096, 0)
     } else {
-        this.pwm.setPWM(pin, 0, value, callback);
+        this.pwm.setPWM(pin, 0, value);
     }
 };
 
-MotorShield.prototype.setPin = function(pin, value, callback) {
+MotorShield.prototype.setPin = function(pin, value) {
     if (value === LOW){
-        this.pwm.setPWM(pin, 0, 0, callback)
+        this.pwm.setPWM(pin, 0, 0)
     } else {
-        this.pwm.setPWM(pin, 4096, 0, callback)
+        this.pwm.setPWM(pin, 4096, 0)
     }
 };
 
