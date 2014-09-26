@@ -106,11 +106,31 @@ while true; do
 	matchbox-window-manager -use_titlebar no &
 
 	# Start the browser (See http://peter.sh/experiments/chromium-command-line-switches/)
-	chromium  --app=http://192.168.0.150:8080/openhab.app?sitemap=demo
+	chromium  --app=http://192.168.0.150:8080/openhab.app
 
 done;
 ```
  * Reboot
 ```sh
 sudo reboot
+```
+
+### Step 5
+
+Configure tactile switch as power button From [Adafruit] (https://learn.adafruit.com/adafruit-pitft-28-inch-resistive-touchscreen-display-raspberry-pi/extras)
+gpio pin from left to right : 23, 22, 21, 18
+
+Summary:
+
+ * Add rpi_power_switch to /etc/modules
+```sh
+sudo sed -i '$ a\rpi_power_switch' /etc/modules  
+```
+ * Append options rpi_power_switch gpio_pin=18 mode=0 to /etc/modprobe.d/adafruit.conf
+```sh
+sudo sed -i '$ a\options rpi_power_switch gpio_pin=18 mode=0' /etc/modprobe.d/adafruit.conf
+```
+ * To make it active immediately run sudo modprobe rpi_power_switch or reboot
+```sh
+sudo modprobe rpi_power_switch
 ```
