@@ -1,6 +1,6 @@
-# PiTFT Control
+# RPiSoC Ventilation Control
 
-This bundle containt doc and source for the Pi with RPiSoc Board with 2 Motor Shield and proto board
+This bundle containt doc and source for the Pi with RPiSoc Board proto board
 Install  
 
 ## Pi Installation
@@ -36,7 +36,7 @@ sudo reboot
 
 ### Step 4 
 
-Setup SPI for RPiSoC communication and I2C for Motor Shield communication
+Setup SPI for RPiSoC communication
 
 Detail
  * http://embeditelectronics.github.io/psoc_2_pi/getting_started.html#using-the-rpisoc
@@ -46,15 +46,8 @@ Detail
 
 ```sh
 sudo sed -i 's/blacklist spi-bcm2708/#blacklist spi-bcm2708/g' /etc/modprobe.d/raspi-blacklist.conf
-sudo sed -i 's/blacklist i2c-bcm2708/#blacklist i2c-bcm2708/g' /etc/modprobe.d/raspi-blacklist.conf
-sudo sed -i '$ a\i2c-bcm2708' /etc/modules
-sudo sed -i '$ a\i2c-dev' /etc/modules
 
 sudo apt-get install python-dev
-sudo apt-get install i2c-tools
-sudo apt-get install python-smbus
-
-sudo adduser pi i2c
 
 sudo reboot
 ```
@@ -91,11 +84,7 @@ sudo reboot
 # node --version
 ```
 
+### Step 5 
 
-
-```sh
-git clone https://github.com/pascalmartin/Adafruit-Raspberry-Pi-Python-Code.git
-cd Adafruit-Raspberry-Pi-Python-Code/Adafruit_MotorShield
-rm Adafruit_I2C.py
-ln -s ../Adafruit_I2C/Adafruit_I2C.py
-```
+Install VentilationControler node app
+Copie code from https://github.com/pascalmartin/ForgetMeNot/tree/master/bundles/rpisoc/VentilationControler and upload to ~/VentilationControler
