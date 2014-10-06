@@ -1,5 +1,18 @@
+/* 
 import org.openhab.core.library.types.*
 
+rule "Update ventillation status on switch"
+	when
+		Item global_Vent_Switch received command ON
+	then
+		sendCommand(global_Vent_Status, INCREASE)
+end
+*/
+
+/*
+import org.openhab.core.library.types.*
+
+ 
 rule "Initialize heating states"
 	when 
 		System started
@@ -24,3 +37,5 @@ rule "Start heating"
 			postUpdate(Heating_Zone1, OFF)
 		}
 end
+
+*/

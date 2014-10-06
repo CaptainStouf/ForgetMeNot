@@ -23,10 +23,11 @@
 	
 # Step 2 Install OpenHab and my demo app
 - Install openHAB Core
-	sudo wget https://github.com/openhab/openhab/releases/download/v1.5.0/distribution-1.5.0-runtime.zip -O /home/pi/distribution-1.5.0-runtime.zip
+	#sudo wget https://github.com/openhab/openhab/releases/download/v1.5.0/distribution-1.5.0-runtime.zip -O /home/pi/distribution-1.5.0-runtime.zip
+	sudo wget https://github.com/openhab/openhab/releases/download/v1.5.1/distribution-1.5.1-runtime.zip -O /home/pi/distribution-1.5.1-runtime.zip
 	sudo mkdir /opt/openhab 
 	cd /opt/openhab/ 
-	sudo unzip /home/pi/distribution-1.5.0-runtime.zip
+	sudo unzip /home/pi/distribution-1.5.1-runtime.zip
 - Installing my demo openHab config
 	# Transferer le zip pascalhome_openhab_proto1.zip dans /home/pi/pascalhome_openhab_proto1.zip
 	sudo unzip /home/pi/pascalhome_openhab_proto1.zip
@@ -35,7 +36,7 @@
 	# for encoean append -Dgnu.io.rxtx.SerialPorts=/dev/ttyAMA0  right after java
 	sudo sed -i 's/java /java -Dgnu.io.rxtx.SerialPorts=\/dev\/ttyAMA0 /g' /opt/openhab/start.sh 		
 	# for gpio addon "start.sh" and append -Djna.boot.library.path=/usr/lib/jni right after java
-	sudo sed -i 's/java /java -Djna.boot.library.path=\/usr\/lib\/jni /g' /opt/openhab/start.sh 		
+	#sudo sed -i 's/java /java -Djna.boot.library.path=\/usr\/lib\/jni /g' /opt/openhab/start.sh 		
 	
 - Start openHAB
 	sudo chmod +x start.sh  

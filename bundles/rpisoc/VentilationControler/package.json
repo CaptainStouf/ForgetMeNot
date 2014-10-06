@@ -1,0 +1,17 @@
+{
+  "name": "VentilationControler",
+  "version": "0.0.1",
+  "description": "Home ventilation controler with RPiSoC",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "Pascal Martin",
+  "license": "None",
+  "dependencies": {
+      "express": "4.x",
+      "python-shell" : "0.0.x"
+  },
+  "devDependencies": {}
+}

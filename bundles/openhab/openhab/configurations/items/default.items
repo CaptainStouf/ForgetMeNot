@@ -1,0 +1,94 @@
+Group All
+Group groupFirstFloor "Étage" <firstfloor> (All)
+Group groupGroundFloor "Rez-de-chaussé" <groundfloor> (All)
+Group groupCellar "Sous-sol" <cellar> (All)
+//Group groupStatus "Global" <chart>	(All)
+
+Group groupGroundFloor_LivingRoom "Salon" <video> (groupGroundFloor)
+Group groupGroundFloor_Kitchen "Cuisine" <kitchen> (groupGroundFloor)
+
+Group groupFirstFloor_Bathroom "Sale de bain" <bath> (groupFirstFloor)
+Group groupFirstFloor_MasterBedroom "Chambre" <bedroom> (groupFirstFloor)
+
+Group groupCellar_LivingRoom "Salle familiale" <video> (groupCellar)
+Group groupCellar_BedroomFront "Chambre avant" <bedroom> (groupCellar)
+Group groupCellar_BedroomBack "Chambre arrière" <bedroom> (groupCellar)
+
+/* active groups */
+Group:Switch:OR(ON, OFF) activeGroupHeating "Zone en chauffage [(%d)]" <heating>
+Group:Number:AVG activeGroupTemperature "Temperature Moy. [%.1f °C]" <temperature> 
+
+
+// ----------------------------------------------------
+// FirstFloor device
+// ----------------------------------------------------
+
+// EnOcean Temperature sensor with humidity
+Number firstFloor_Bathroom_Temperature "Salle de bain [%.1f °C]" <temperature> (groupFirstFloor_Bathroom, activeGroupTemperature) {enocean="{id=01:80:EE:74, eep=A5:04:01, parameter=TEMPERATURE}"}
+Number firstFloor_Bathroom_Humidity "Humidité [%.1f %%]" <temperature> (groupFirstFloor_Bathroom) {enocean="{id=01:80:EE:74, eep=A5:04:01, parameter=HUMIDITY}"}
+
+Number firstFloor_MasterBedroom_Temperature "Chambre principal [%.1f °C]" <temperature> (groupFirstFloor_MasterBedroom, activeGroupTemperature) {enocean="{id=01:83:17:96, eep=A5:02:05, parameter=TEMPERATURE}"}
+
+// ----------------------------------------------------
+// Ground Floor device
+// ----------------------------------------------------
+
+Number groundFloor_Kitchen_Temperature "Cuisine [%.1f °C]" <temperature> (groupGroundFloor_Kitchen, activeGroupTemperature) {enocean="{id=01:83:18:1C, eep=A5:02:05, parameter=TEMPERATURE}"}
+Number groundFloor_LivingRoom_Temperature "Salon [%.1f °C]" <temperature> (groupGroundFloor_LivingRoom, activeGroupTemperature) {enocean="{id=01:83:17:7E, eep=A5:02:05, parameter=TEMPERATURE}"}
+
+// ----------------------------------------------------
+// Cellar device
+// ----------------------------------------------------
+
+
+// ----------------------------------------------------
+// Global device
+// ----------------------------------------------------
+Number global_Vent_Status "Status [MAP(vent_status.map):%d]" <temperature>  {http="<[http://192.168.0.155/status:10000:REGEX(([0-3]))]"}
+Switch global_Vent_Switch "Controle" <temperature>  { http=">[ON:GET:http://192.168.0.155/switch]", autoupdate="false"}
+
+//Switch DemoSwitch				"Switch"
+//Switch item=DemoSwitch label="Button Switch" mappings=[ON="On"]
+
+// ----------------------------------------------------
+// EnOcean Switch 
+// ----------------------------------------------------
+Switch EnOcean_switch_0029E30F_A "Switch 0029E30F A" { enocean="{id=00:29:E3:0F, eep=F6:02:01, channel=A}"}
+Switch EnOcean_switch_0029E30F_B "Switch 0029E30F B" { enocean="{id=00:29:E3:0F, eep=F6:02:01, channel=B}"}
+
+Switch EnOcean_switch_0029F30E_A "Switch 0029F30E A" { enocean="{id=00:29:F3:0E, eep=F6:02:01, channel=A}"}
+Switch EnOcean_switch_0029F30E_B "Switch 0029F30E B" { enocean="{id=00:29:F3:0E, eep=F6:02:01, channel=B}"}
+
+// Ne vas pas très bien :)
+Switch EnOcean_switch_0029E373_A "Switch 0029E373 A" { enocean="{id=00:29:E3:73, eep=F6:02:01, channel=A}"}
+Switch EnOcean_switch_0029E373_B "Switch 0029E373 B" { enocean="{id=00:29:E3:73, eep=F6:02:01, channel=B}"}
+
+// ----------------------------------------------------
+// EnOcean Contact
+// ----------------------------------------------------
+Contact EnOcean_contact_018131F9 "Contact 018131F9 [MAP(en.map):%s]" <contact> (enocean) {enocean="{id=01:81:31:F9, eep=D5:00:01, parameter=CONTACT_STATE"}
+Contact EnOcean_contact_0180F444 "Contact 0180F444 [MAP(en.map):%s]" <contact> (enocean) {enocean="{id=01:80:F4:44, eep=D5:00:01, parameter=CONTACT_STATE"}
+Contact EnOcean_contact_01813876 "Contact 01813876 [MAP(en.map):%s]" <contact> (enocean) {enocean="{id=01:81:38:76, eep=D5:00:01, parameter=CONTACT_STATE"}
+
+// ----------------------------------------------------
+// Mobile phone detect
+// ----------------------------------------------------
+Switch Present "At home" <present> {nh="192.168.0.198"}
+
+
+
+/*
+Switch EnOcean_switch_00298B1A { enocean="{id=00:29:F3:0E, eep=F6:02:01, channel=A}", gpio="pin:21"}
+Switch EnOcean_switch_00298B1B { enocean="{id=00:29:F3:0E, eep=F6:02:01, channel=B}", gpio="pin:20"}
+Number EnOcean_sensor_01809DC1 "Temperature zone 1 [%.3f °C]" <temperature> (enocean) {enocean="{id=01:83:17:7E, eep=A5:02:05, parameter=TEMPERATURE}"}
+Contact EnOcean_sensor_0180878B "Contact [MAP(en.map):%s]" <contact> (enocean) {enocean="{id=01:81:31:F9, eep=D5:00:01, parameter=CONTACT_STATE"}
+
+Number TEMP_OWFS "Temperature owfs [%.3f °C]" <temperature> {onewire="28.77FDD4040000#temperature"}
+Number Heating_Target_Zone1 "Target Temperature zone 1 [%.1f °C]" <temperature>
+Switch Heating_Zone1 "Heating zone 1" <heating> { http=">[CHANGED:POST:http://192.168.0.194:3000/ledcontrol?status=%2$s&date=%1$tY-%1$tm-%1$td]"}
+
+Switch Present "At home" <present> {nh="192.168.0.198"}
+
+Switch Led_Blue "LED Blue" {gpio="pin:21"}
+* 
+ */

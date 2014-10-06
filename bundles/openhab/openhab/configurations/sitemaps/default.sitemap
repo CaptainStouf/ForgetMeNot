@@ -1,0 +1,45 @@
+sitemap default label="Menu principale"
+{
+	Frame {
+		Group item=groupFirstFloor
+		Group item=groupGroundFloor 
+		Group item=groupCellar
+		
+		Text label="Global" icon="chart" {
+			Group item=activeGroupHeating
+			Group item=activeGroupTemperature 
+			Text label="Ventillation" icon="chart" {
+				Text item=global_Vent_Status
+				Switch item=global_Vent_Switch mappings=[ON="Switch"]		
+			}	
+		}
+		
+		
+	}
+	
+	
+	/* 
+	Frame {
+		Text item=Present label="Present [MAP(prensence.map):%s]"
+		
+		Switch item=EnOcean_switch_0029E30F_A
+		Switch item=EnOcean_switch_0029E30F_B
+		
+		Switch item=EnOcean_switch_0029F30E_A
+		Switch item=EnOcean_switch_0029F30E_B
+		
+		Switch item=EnOcean_switch_0029E373_A
+		Switch item=EnOcean_switch_0029E373_B
+		
+		Text item=EnOcean_contact_018131F9
+		Text item=EnOcean_contact_0180F444
+		Text item=EnOcean_contact_01813876
+		
+		Text item=EnOcean_temperature_0183181C valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]		
+		Text item=EnOcean_temperature_01831796 valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]		
+		Text item=EnOcean_temperature_0183177E valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]	
+		
+		Text item=EnOcean_temperature_0180EE74 valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]	
+		Text item=EnOcean_humidity_0180EE74	
+	}*/
+}

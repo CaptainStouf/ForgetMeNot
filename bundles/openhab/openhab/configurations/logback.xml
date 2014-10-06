@@ -30,7 +30,16 @@
 		<appender-ref ref="EVENTFILE" />
 		<appender-ref ref="STDOUT" />
 	</logger>
+	<!--
+	<logger name="org.openhab.binding.enocean" level="TRACE" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
 
+	<logger name="org.opencean.core" level="TRACE" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	-->
+	
 	<logger name="org.openhab" level="INFO"/>
 
 	<!-- this class gives an irrelevant warning at startup -->
