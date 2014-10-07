@@ -87,6 +87,7 @@ sudo reboot
 ### Step 5 
 
 Install VentilationControler node app
+
 Copie code from https://github.com/pascalmartin/ForgetMeNot/tree/master/bundles/rpisoc/VentilationControler and upload to ~/VentilationControler
 
 Configure deamon
