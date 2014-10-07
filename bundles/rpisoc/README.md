@@ -88,3 +88,9 @@ sudo reboot
 
 Install VentilationControler node app
 Copie code from https://github.com/pascalmartin/ForgetMeNot/tree/master/bundles/rpisoc/VentilationControler and upload to ~/VentilationControler
+
+Configure deamon
+ * https://gist.github.com/nariyu/1211413
+ * http://stackoverflow.com/questions/11275870/how-can-i-automatically-start-a-node-js-application-in-amazon-linux-ami-on-aws
+
+
