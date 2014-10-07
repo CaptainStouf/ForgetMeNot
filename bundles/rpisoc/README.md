@@ -94,4 +94,26 @@ Configure deamon
  * https://gist.github.com/nariyu/1211413
  * http://stackoverflow.com/questions/11275870/how-can-i-automatically-start-a-node-js-application-in-amazon-linux-ami-on-aws
 
+```sh
+chmod 755 /home/pi/VentilationControler/VentilationControler.sh
+sudo cp /home/pi/VentilationControler/VentilationControler.sh /etc/init.d
 
+# Make sure the script is executable (chmod again). 
+sudo chmod 755 /etc/init.d/VentilationControler.sh
+
+#At this point you should be able to start your Python script using the command 
+#   sudo /etc/init.d/VentilationControler.sh start
+#   sudo sh -x /etc/init.d/VentilationControler.sh start
+#check its status with the status argument
+#   /etc/init.d/VentilationControler.sh status 
+#and stop it with 
+#   sudo /etc/init.d/VentilationControler.sh stop
+# restart
+#   sudo /etc/init.d/VentilationControler.sh restart
+
+# To make the Raspberry Pi use your init script at the right time, one more step is required: running the command 
+sudo update-rc.d VentilationControler.sh defaults
+
+# This command adds in symbolic links to the /etc/rc.x directories so that the init script is run at the default times. you can see these links if you do 
+ls -l /etc/rc?.d/*VentilationControler.sh
+```
