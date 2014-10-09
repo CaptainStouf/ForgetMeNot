@@ -1,13 +1,19 @@
-/* 
+
 import org.openhab.core.library.types.*
+
 
 rule "Update ventillation status on switch"
 	when
 		Item global_Vent_Switch received command ON
 	then
-		sendCommand(global_Vent_Status, INCREASE)
+	
+		var status = sendHttpGetRequest("http://192.168.0.155/status")
+		postUpdate(global_Vent_Status, status)
+		//send Command(global_Vent_Status, )
 end
-*/
+
+
+
 
 /*
 import org.openhab.core.library.types.*

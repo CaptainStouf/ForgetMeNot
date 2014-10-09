@@ -66,9 +66,10 @@ Switch EnOcean_switch_0029E373_B "Switch 0029E373 B" { enocean="{id=00:29:E3:73,
 // ----------------------------------------------------
 // EnOcean Contact
 // ----------------------------------------------------
-Contact EnOcean_contact_018131F9 "Contact 018131F9 [MAP(en.map):%s]" <contact> (enocean) {enocean="{id=01:81:31:F9, eep=D5:00:01, parameter=CONTACT_STATE"}
-Contact EnOcean_contact_0180F444 "Contact 0180F444 [MAP(en.map):%s]" <contact> (enocean) {enocean="{id=01:80:F4:44, eep=D5:00:01, parameter=CONTACT_STATE"}
-Contact EnOcean_contact_01813876 "Contact 01813876 [MAP(en.map):%s]" <contact> (enocean) {enocean="{id=01:81:38:76, eep=D5:00:01, parameter=CONTACT_STATE"}
+Contact EnOcean_contact_0180F444 "Porte cave [MAP(door_status.map):%s]" <contact> (groupGroundFloor) {enocean="{id=01:80:F4:44, eep=D5:00:01, parameter=CONTACT_STATE"}
+
+Contact EnOcean_contact_018131F9 "Contact 018131F9 [MAP(en.map):%s]" <contact> (groupCellar) {enocean="{id=01:81:31:F9, eep=D5:00:01, parameter=CONTACT_STATE"}
+Contact EnOcean_contact_01813876 "Contact 01813876 [MAP(en.map):%s]" <contact> (groupCellar) {enocean="{id=01:81:38:76, eep=D5:00:01, parameter=CONTACT_STATE"}
 
 // ----------------------------------------------------
 // Mobile phone detect
