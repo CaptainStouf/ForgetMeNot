@@ -1,16 +1,8 @@
 # Import lib
 import signal
 import sys
-import atexit
 import time
 from rpisoc import *
-
-def signal_term_handler(signal, frame):
-    print 'got SIGTERM'
-    sys.exit(0) # Le hook atexit va etre appeler et faire le cleanup
-	
-# Enregistrement du hook au debut sinon sa marche par :(
-signal.signal(signal.SIGTERM, signal_term_handler)
 
 # Constante
 STATUS_LEVEL = [0,4,6,10]
@@ -20,13 +12,11 @@ RPiSoC('SPI')
 
 My_DELSIG  = ADC('DELSIG')
 
-led1 = DigitalOutput (12,7)
-led2 = DigitalOutput (12,6)
-led3 = DigitalOutput (12,5)
+led1 = DigitalOutput (12,4)
+led2 = DigitalOutput (12,5)
+led3 = DigitalOutput (12,6)
 
-switch = DigitalOutput (12,1)
-
-btn = DigitalInput(5,4)
+switch = DigitalOutput (12,7)
 
 # Function to read voltage from pin P15[5]
 def readVolts():
@@ -80,42 +70,38 @@ def updateGetStatus():
 def transitorActivate():
 	switch.Write(0)
 	switch.Write(1)
-	time.sleep(1.2)
+	time.sleep(0.2)
 	switch.Write(0)	
 	return updateGetStatus()
 		
-def stopAll():
-	print ("Clean stop")
-	switch.Write(0)
-	switch.Write(1)
-	switch.Write(0)
-		
+
 try:
 		
 	if (len(sys.argv) == 1 or sys.argv[1] == "status" ):
 		level = updateGetStatus()
 		print level
 	elif (sys.argv[1] == "switch"):
-		level = transitorActivate()
-		print level
-	elif (sys.argv[1] == "btn"):
-		# Exit handler
-		atexit.register(stopAll)
-		while True:
-			if (btn.Read()):
-				print 'btn read ' + time.ctime()
-				led3.Write(1)
-				transitorActivate()	
-				led3.Write(0)			
-			time.sleep(.2)
+		if (len(sys.argv) == 2):
+			level = transitorActivate()
+			print level
+		else:
+			target = int(sys.argv[2])
+			if (target < 0 or target > 3):
+				print 'Invalide switch level 0-3 only'
+				exit(1)
+				
+			current = updateGetStatus()
+			while (current != target):
+				current = transitorActivate()				
+				if (current != target):
+					time.sleep(0.2)			
+			print current
 	else:
 		print 'Invalide command only [status|switch|btn] are valide'
 
 except KeyboardInterrupt:
 	#Restore GPIO to default state
 	print ("KeyboardInterrupt close detected")
-except SystemExit:
-	print ("SystemExit close detected")
 except:
 	print "Unexpected error:", sys.exc_info()[0]
 	

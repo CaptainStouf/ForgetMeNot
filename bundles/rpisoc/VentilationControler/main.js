@@ -4,13 +4,17 @@ var express = require('express');
 
 var app = express();
 
-function getPythonOption(command){
+function getPythonOption(command, target){
+    var args = [command];
+    if (target){
+        args.push(target);
+    }
     return {
         mode: 'text',
         pythonPath: '/usr/bin/python',
         pythonOptions: ['-u'],
         scriptPath: '/home/pi/psoc_2_pi/API_Python_v_1_1_1',
-        args: [command]
+        args: args
     };
 }
 
@@ -28,20 +32,21 @@ pyshell.end(function (err) {
 });*/
 
 
-function serveCommand(req, res, command){
-    var options = getPythonOption(command);
+function serveCommand(req, res, command, target){
+    var options = getPythonOption(command, target);
 
     PythonShell.run('ventilation_controler_rpisoc.py', options, function (err, results) {
         if (err) {
+            console.error(err);
             res.status(404).send(err);
         }
         // results is an array consisting of messages collected during execution
         //console.log('results : %j', results);
         var result = "N/A";
-        if (results.length > 0){
+        if (results && results.length > 0){
             result = results[0];
         }
-        //console.log("Command : " + command + " result: " + result + " " + new Date());
+        console.log("Command : " + command + " target : " + target +" result: " + result + " " + new Date());
         res.send(result);
     });
 }
@@ -51,12 +56,15 @@ function serveStatus(req, res){
 }
 
 function serveSwitch(req, res){
-    serveCommand(req, res, "switch");
+    console.log(JSON.stringify(req.query, null, 4));
+    console.log(JSON.stringify(req.body, null, 4));
+    serveCommand(req, res, "switch",  req.query['target']);
 }
 
 app.get('', serveStatus);
 app.get('/status', serveStatus);
 app.get('/switch', serveSwitch);
+app.post('/switch', serveSwitch);
 
 var server = app.listen(80, function() {
     console.log('Listening on port %d', server.address().port);
