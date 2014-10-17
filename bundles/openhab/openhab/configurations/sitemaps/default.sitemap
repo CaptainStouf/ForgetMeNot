@@ -1,7 +1,18 @@
 sitemap default label="Menu principale"
 {
 	Frame {
-		Group item=groupFirstFloor
+		
+
+		Text label="Étage" icon="firstfloor" {
+			Group item=groupFirstFloor_MasterBedroom
+			Text label="Sale de bain" icon="bath" {
+				Text item=firstFloor_Bathroom_Temperature
+				Text item=firstFloor_Bathroom_Humidity				
+				Chart item=firstFloor_Bathroom_Humidity icon="chart" label="Graph. Humidity" period=24h refresh=3600 service="postgresql"
+			}
+			
+		}
+		
 		Group item=groupGroundFloor 
 		Group item=groupCellar
 		
@@ -10,7 +21,7 @@ sitemap default label="Menu principale"
 			Group item=activeGroupTemperature 
 			Text label="Ventillation" icon="chart" {
 				Text item=global_Vent_Status
-				Switch item=global_Vent_Switch mappings=[ON="Switch"]		
+				Switch item=global_Vent_Status label="Select" mappings=[0="Off", 1="20", 2="40", 3="60"]
 			}	
 		}
 		

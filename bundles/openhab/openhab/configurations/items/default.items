@@ -44,8 +44,7 @@ Number groundFloor_LivingRoom_Temperature "Salon [%.1f °C]" <temperature> (grou
 // ----------------------------------------------------
 // Global device
 // ----------------------------------------------------
-Number global_Vent_Status "Status [MAP(vent_status.map):%d]" <temperature>  {http="<[http://192.168.0.155/status:10000:REGEX(([0-3]))]"}
-Switch global_Vent_Switch "Controle" <temperature>  { http=">[ON:GET:http://192.168.0.155/switch]", autoupdate="false"}
+Number global_Vent_Status "Status [MAP(vent_status.map):%d]" <fan>  {http=">[0:POST:http://192.168.0.155/switch?target=%2$s] >[1:POST:http://192.168.0.155/switch?target=%2$s] >[2:POST:http://192.168.0.155/switch?target=%2$s] >[3:POST:http://192.168.0.155/switch?target=%2$s] <[http://192.168.0.155/status:5000:REGEX(([0-3]))]"}
 
 //Switch DemoSwitch				"Switch"
 //Switch item=DemoSwitch label="Button Switch" mappings=[ON="On"]
@@ -66,7 +65,7 @@ Switch EnOcean_switch_0029E373_B "Switch 0029E373 B" { enocean="{id=00:29:E3:73,
 // ----------------------------------------------------
 // EnOcean Contact
 // ----------------------------------------------------
-Contact EnOcean_contact_0180F444 "Porte cave [MAP(door_status.map):%s]" <contact> (groupGroundFloor) {enocean="{id=01:80:F4:44, eep=D5:00:01, parameter=CONTACT_STATE"}
+Contact EnOcean_contact_0180F444 "Porte cave [MAP(door_status.map):%s]" <door> (groupGroundFloor) {enocean="{id=01:80:F4:44, eep=D5:00:01, parameter=CONTACT_STATE"}
 
 Contact EnOcean_contact_018131F9 "Contact 018131F9 [MAP(en.map):%s]" <contact> (groupCellar) {enocean="{id=01:81:31:F9, eep=D5:00:01, parameter=CONTACT_STATE"}
 Contact EnOcean_contact_01813876 "Contact 01813876 [MAP(en.map):%s]" <contact> (groupCellar) {enocean="{id=01:81:38:76, eep=D5:00:01, parameter=CONTACT_STATE"}

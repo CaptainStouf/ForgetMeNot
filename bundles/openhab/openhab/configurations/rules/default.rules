@@ -1,7 +1,7 @@
 
 import org.openhab.core.library.types.*
 
-
+/* 
 rule "Update ventillation status on switch"
 	when
 		Item global_Vent_Switch received command ON
@@ -11,9 +11,47 @@ rule "Update ventillation status on switch"
 		postUpdate(global_Vent_Status, status)
 		//send Command(global_Vent_Status, )
 end
+*/
 
 
+// http://fr.wikipedia.org/wiki/Pente_(math%C3%A9matiques)
+// Valeur humidity précédente
+var Number xA = 0
+var Number yA = 0
+// Valeur humidity courante
+var Number xB = 0
+var Number yB = 0
 
+rule "Check fast humidity increase" 
+	when
+		Item firstFloor_Bathroom_Humidity received update
+	then
+		var Number currentValue = firstFloor_Bathroom_Humidity.state as DecimalType
+		var Number currentEpoch = now().getMillis() / 1000.0
+		if (xA == 0){
+			xA = currentEpoch
+			yA = currentValue
+		} else if(xB == 0){
+			xB = currentEpoch
+			yB = currentValue
+		} else {
+			xA = xB;
+			yA = yB;
+			xB = currentEpoch
+			yB = currentValue
+		}
+		
+		if (xB != 0){
+			var Number pente = (yB-yA)/(xB-xA)
+			logInfo("Humidity increase", "********************************")
+			logInfo("Humidity increase", "(" + xA + ","+ yA +") (" + xB + "," + yB + ")")
+			logInfo("Humidity increase", "Current humidity pente: " + pente)
+			if (pente > 0.01){		
+				logInfo("Humidity increase", "Auto start the ventillation because fast humidity increase")
+				global_Vent_Status.sendCommand(3);				
+			}
+		}
+end
 
 /*
 import org.openhab.core.library.types.*
