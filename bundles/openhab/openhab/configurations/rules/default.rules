@@ -1,6 +1,30 @@
 
 import org.openhab.core.library.types.*
 
+import java.util.concurrent.locks.ReentrantLock
+
+import org.apache.commons.httpclient.Credentials
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler
+import org.apache.commons.httpclient.Header
+import org.apache.commons.httpclient.HeaderElement
+import org.apache.commons.httpclient.HttpClient
+import org.apache.commons.httpclient.HttpException
+import org.apache.commons.httpclient.HttpMethod
+import org.apache.commons.httpclient.HttpStatus
+import org.apache.commons.httpclient.URIException
+import org.apache.commons.httpclient.UsernamePasswordCredentials
+import org.apache.commons.httpclient.auth.AuthScope
+import org.apache.commons.httpclient.methods.DeleteMethod
+import org.apache.commons.httpclient.methods.EntityEnclosingMethod
+import org.apache.commons.httpclient.methods.GetMethod
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity
+import org.apache.commons.httpclient.methods.PostMethod
+import org.apache.commons.httpclient.methods.PutMethod
+import org.apache.commons.httpclient.params.HttpMethodParams
+import org.apache.commons.io.IOUtils
+import org.apache.commons.lang.StringUtils
+import org.apache.commons.httpclient.params.HttpMethodParams
+
 /* 
 rule "Update ventillation status on switch"
 	when
@@ -13,7 +37,28 @@ rule "Update ventillation status on switch"
 end
 */
 
+var String OPEN_SALON_GRANDE = "http://192.168.0.172/sm/0x62/2/DOUBLE/FORWARD/150/1800"
+var String CLOSE_SALON_GRANDE = "http://192.168.0.172/sm/0x62/2/DOUBLE/BACKWARD/150/1800"
+//var boolean livingRoomBigRun = false
+var ReentrantLock livingRoomBigRun = new ReentrantLock()
+var String livingRoomBigState = "ON"
 
+//var String OPEN_CUISINE = "http://192.168.0.172/sm/0x60/2/DOUBLE/BACKWARD/250/2900"
+//var String CLOSE_CUISINE = "http://192.168.0.172/sm/0x60/2/DOUBLE/FORWARD/250/3000"
+var String OPEN_CUISINE = "http://192.168.0.171/sm/0x60/1/DOUBLE/BACKWARD/250/2900"
+var String CLOSE_CUISINE = "http://192.168.0.171/sm/0x60/1/DOUBLE/FORWARD/250/3000"
+
+
+//var boolean cuisineRun = false
+var ReentrantLock cuisineRun = new ReentrantLock()
+var String cuisineState = "ON"
+
+var String BEDROOM_OPEN = "http://192.168.0.171/sm/0x60/1/DOUBLE/FORWARD/150/180"
+var String BEDROOM_CLOSE = "http://192.168.0.171/sm/0x60/1/DOUBLE/BACKWARD/150/180"
+var boolean bedRoomRun = false
+var String bedRoomState = "ON"
+
+// ***********************************************************************
 // http://fr.wikipedia.org/wiki/Pente_(math%C3%A9matiques)
 // Valeur humidity précédente
 var Number xA = 0
@@ -21,6 +66,17 @@ var Number yA = 0
 // Valeur humidity courante
 var Number xB = 0
 var Number yB = 0
+
+
+rule "Init curtain state"
+	when
+		System started
+	then
+		logInfo("Init", "********************************")
+		postUpdate(EnOcean_switch_0029F30E_A, ON)
+		postUpdate(EnOcean_switch_0029F30E_B, ON)
+end
+
 
 rule "Check fast humidity increase" 
 	when
@@ -52,6 +108,108 @@ rule "Check fast humidity increase"
 			}
 		}
 end
+
+
+// ***********************************************************************
+// Open / Close curtain
+
+rule "Open Close cuisine curtain" 
+	when 
+		Item EnOcean_switch_0029F30E_B received command		
+	then
+		cuisineRun.lock()
+		try {
+			logInfo("Cuisine curtain", "********************************")
+			logInfo("Cuisine curtain", receivedCommand.toString())
+			if(receivedCommand==ON) {
+				if (cuisineState != receivedCommand.toString()){
+					// Open
+					logInfo("Cuisine curtain", " -- Open -- ")
+					cuisineState = receivedCommand.toString()
+					var String response = sendHttpGetRequest(OPEN_CUISINE)
+					logInfo("Cuisine curtain", "Result: " + response)
+					postUpdate(EnOcean_switch_0029F30E_B, ON)
+				}
+			} else {
+				if (cuisineState != receivedCommand.toString()){
+					// Close
+					logInfo("Cuisine curtain", " -- Close -- ")
+					cuisineState = receivedCommand.toString()
+					var String response = sendHttpGetRequest(CLOSE_CUISINE)
+					logInfo("Cuisine curtain", "Result: " + response)
+					postUpdate(EnOcean_switch_0029F30E_B, OFF)
+				}
+			}		
+		} finally  {
+	        cuisineRun.unlock()
+	    }
+end
+
+
+rule "Open Close living room big curtain" 
+	when 
+		Item EnOcean_switch_0029F30E_A received command		
+	then
+		livingRoomBigRun.lock()
+	    try {
+			logInfo("LivingRoom big curtain", "********************************")
+			logInfo("LivingRoom big curtain", receivedCommand.toString())
+			if(receivedCommand==ON) {
+				if (livingRoomBigState != receivedCommand.toString()){
+					// Open
+					logInfo("LivingRoom big curtain", " -- Open -- ")
+					livingRoomBigState = receivedCommand.toString()
+					var String response = sendHttpGetRequest(OPEN_SALON_GRANDE)
+					logInfo("LivingRoom big curtain", "Result: " + response)
+					postUpdate(EnOcean_switch_0029F30E_A, ON)
+				}
+			} else {
+				if (livingRoomBigState != receivedCommand.toString()){
+					// Close
+					logInfo("LivingRoom big curtain", " -- Close -- ")
+					livingRoomBigState = receivedCommand.toString()
+					var String response = sendHttpGetRequest(CLOSE_SALON_GRANDE)
+					logInfo("LivingRoom big curtain", "Result: " + response)
+					postUpdate(EnOcean_switch_0029F30E_A, OFF)
+				}
+			}
+		} finally  {
+	        livingRoomBigRun.unlock()
+	    }
+end
+
+rule "Open Close bedroom curtain" 
+	when 
+		Item EnOcean_switch_0029E30F_A received command		
+	then
+		logInfo("Bedroom curtain", "********************************")
+		logInfo("Bedroom curtain", receivedCommand.toString())
+		if (!bedRoomRun){
+			if(receivedCommand==ON) {
+				if (bedRoomState != receivedCommand.toString()){
+					// Open
+					logInfo("Bedroom curtain", " -- Open -- ")
+					bedRoomRun = true;
+					bedRoomState = receivedCommand.toString()
+					sendHttpGetRequest(BEDROOM_OPEN);
+					bedRoomRun = false;
+				}
+			} else {
+				if (bedRoomState != receivedCommand.toString()){
+					// Close
+					logInfo("Bedroom curtain", " -- Close -- ")
+					bedRoomRun = true;
+					bedRoomState = receivedCommand.toString()
+					sendHttpGetRequest(BEDROOM_CLOSE);
+					bedRoomRun = false;
+				}
+			}
+		}
+end
+
+
+
+
 
 /*
 import org.openhab.core.library.types.*

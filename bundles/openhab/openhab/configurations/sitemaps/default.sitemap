@@ -4,7 +4,11 @@ sitemap default label="Menu principale"
 		
 
 		Text label="Étage" icon="firstfloor" {
-			Group item=groupFirstFloor_MasterBedroom
+			Text label="Chambre" icon="bedroom" {
+				Text item=firstFloor_MasterBedroom_Temperature
+				Switch item=EnOcean_switch_0029E30F_A label="Rideau" mappings=[ON="Ouvert", OFF="Fermé"]		
+			}
+			
 			Text label="Sale de bain" icon="bath" {
 				Text item=firstFloor_Bathroom_Temperature
 				Text item=firstFloor_Bathroom_Humidity				
@@ -13,7 +17,21 @@ sitemap default label="Menu principale"
 			
 		}
 		
-		Group item=groupGroundFloor 
+		Text label="Rez-de-chaussé" icon="groundfloor" {
+			Text label="Salon" icon="video" {
+				Text item=groundFloor_LivingRoom_Temperature
+				Switch item=EnOcean_switch_0029F30E_A label="Rideau" mappings=[ON="Ouvert", OFF="Fermé"]				
+			}			
+			Text label="Cuisine" icon="kitchen" {
+				Text item=groundFloor_Kitchen_Temperature
+				Switch item=EnOcean_switch_0029F30E_B label="Rideau" mappings=[ON="Ouvert", OFF="Fermé"]
+				Switch item=global_Vent_Status label="Select" mappings=[0="Off", 1="20", 2="40", 3="60"]				
+			}
+			Text item=EnOcean_contact_0180F444
+		}
+		
+		
+		
 		Group item=groupCellar
 		
 		Text label="Global" icon="chart" {

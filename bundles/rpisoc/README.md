@@ -68,7 +68,7 @@ git clone git://github.com/EmbeditElectronics/psoc_2_pi.git
 cd API_Python_v_1_1
 ```
 
-### Step 4 
+### Step 5
 
 Install nodejs (http://joshondesign.com/2013/10/23/noderpi)
 
@@ -84,11 +84,14 @@ sudo reboot
 # node --version
 ```
 
-### Step 5 
+### Step 6 
 
 Install VentilationControler node app
 
 Copie code from https://github.com/pascalmartin/ForgetMeNot/tree/master/bundles/rpisoc/VentilationControler and upload to ~/VentilationControler
+
+TODO: npm install
+
 
 Configure deamon
  * https://gist.github.com/nariyu/1211413

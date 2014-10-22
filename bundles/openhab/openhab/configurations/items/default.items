@@ -52,15 +52,15 @@ Number global_Vent_Status "Status [MAP(vent_status.map):%d]" <fan>  {http=">[0:P
 // ----------------------------------------------------
 // EnOcean Switch 
 // ----------------------------------------------------
-Switch EnOcean_switch_0029E30F_A "Switch 0029E30F A" { enocean="{id=00:29:E3:0F, eep=F6:02:01, channel=A}"}
-Switch EnOcean_switch_0029E30F_B "Switch 0029E30F B" { enocean="{id=00:29:E3:0F, eep=F6:02:01, channel=B}"}
+Switch EnOcean_switch_0029E30F_A "Rideau" { enocean="{id=00:29:E3:0F, eep=F6:02:01, channel=A}", autoupdate="false"}
+Switch EnOcean_switch_0029E30F_B "Rideau" { enocean="{id=00:29:E3:0F, eep=F6:02:01, channel=B}", autoupdate="false"}
 
-Switch EnOcean_switch_0029F30E_A "Switch 0029F30E A" { enocean="{id=00:29:F3:0E, eep=F6:02:01, channel=A}"}
-Switch EnOcean_switch_0029F30E_B "Switch 0029F30E B" { enocean="{id=00:29:F3:0E, eep=F6:02:01, channel=B}"}
+Switch EnOcean_switch_0029F30E_A "Rideau" { enocean="{id=00:29:F3:0E, eep=F6:02:01, channel=A}", autoupdate="false"}
+Switch EnOcean_switch_0029F30E_B "Rideau" { enocean="{id=00:29:F3:0E, eep=F6:02:01, channel=B}", autoupdate="false"}
 
 // Ne vas pas très bien :)
-Switch EnOcean_switch_0029E373_A "Switch 0029E373 A" { enocean="{id=00:29:E3:73, eep=F6:02:01, channel=A}"}
-Switch EnOcean_switch_0029E373_B "Switch 0029E373 B" { enocean="{id=00:29:E3:73, eep=F6:02:01, channel=B}"}
+Switch EnOcean_switch_0029E373_A "Rideau" { enocean="{id=00:29:E3:73, eep=F6:02:01, channel=A}", autoupdate="false"}
+Switch EnOcean_switch_0029E373_B "Rideau" { enocean="{id=00:29:E3:73, eep=F6:02:01, channel=B}", autoupdate="false"}
 
 // ----------------------------------------------------
 // EnOcean Contact
